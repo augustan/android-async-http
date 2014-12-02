@@ -1148,11 +1148,20 @@ public class AsyncHttpClient {
         }
 
         if (contentType != null) {
-            uriRequest.setHeader(HEADER_CONTENT_TYPE, contentType);
+            if (uriRequest instanceof HttpEntityEnclosingRequestBase && ((HttpEntityEnclosingRequestBase) uriRequest).getEntity() != null) {
+                Log.w(LOG_TAG, "Passed contentType will be ignored because HttpEntity sets content type");
+            } else {
+                uriRequest.setHeader(HEADER_CONTENT_TYPE, contentType);
+            }
         }
 
         responseHandler.setRequestHeaders(uriRequest.getAllHeaders());
         responseHandler.setRequestURI(uriRequest.getURI());
+
+        // fixbug 如果要下载文件，不管有没有context，都要update文件位置
+        if (responseHandler instanceof RangeFileAsyncHttpResponseHandler) {
+            ((RangeFileAsyncHttpResponseHandler) responseHandler).updateRequestHeaders(uriRequest);
+        }
 
         AsyncHttpRequest request = newAsyncHttpRequest(client, httpContext, uriRequest, contentType, responseHandler, context);
         threadPool.submit(request);
@@ -1168,8 +1177,8 @@ public class AsyncHttpClient {
                 }
             }
 
-            if (responseHandler instanceof RangeFileAsyncHttpResponseHandler)
-                ((RangeFileAsyncHttpResponseHandler) responseHandler).updateRequestHeaders(uriRequest);
+//            if (responseHandler instanceof RangeFileAsyncHttpResponseHandler)
+//                ((RangeFileAsyncHttpResponseHandler) responseHandler).updateRequestHeaders(uriRequest);
 
             requestList.add(requestHandle);
 
