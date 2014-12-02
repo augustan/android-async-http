@@ -474,8 +474,8 @@ public class AsyncHttpClient {
      * 10 seconds.
      *
      * @param value the connect/socket timeout in milliseconds, at least 1 second
-     * @see {@link #setConnectTimeout(int)} if you need further refinement for either value or
-     * or {@link #setResponseTimeout(int)} methods.
+     * @see #setConnectTimeout(int)
+     * @see #setResponseTimeout(int)
      */
     public void setTimeout(int value) {
         value = value < 1000 ? DEFAULT_SOCKET_TIMEOUT : value;
@@ -650,8 +650,16 @@ public class AsyncHttpClient {
      */
     public void setBasicAuth(String username, String password, AuthScope scope, boolean preemtive) {
         UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
-        this.httpClient.getCredentialsProvider().setCredentials(scope == null ? AuthScope.ANY : scope, credentials);
+        setCredentials(scope, credentials);
         setAuthenticationPreemptive(preemtive);
+    }
+
+    public void setCredentials(AuthScope authScope, Credentials credentials) {
+        if (credentials == null) {
+            Log.d(LOG_TAG, "Provided credentials are null, not setting");
+            return;
+        }
+        this.httpClient.getCredentialsProvider().setCredentials(authScope == null ? AuthScope.ANY : authScope, credentials);
     }
 
     /**
@@ -670,8 +678,18 @@ public class AsyncHttpClient {
 
     /**
      * Removes previously set basic auth credentials
+     *
+     * @deprecated
      */
+    @Deprecated
     public void clearBasicAuth() {
+        clearCredentialsProvider();
+    }
+
+    /**
+     * Removes previously set auth credentials
+     */
+    public void clearCredentialsProvider() {
         this.httpClient.getCredentialsProvider().clear();
     }
 
@@ -1158,7 +1176,7 @@ public class AsyncHttpClient {
         responseHandler.setRequestHeaders(uriRequest.getAllHeaders());
         responseHandler.setRequestURI(uriRequest.getURI());
 
-        // fixbug 如果要下载文件，不管有没有context，都要update文件位置
+        // fixbug ���Ҫ�����ļ���������û��context����Ҫupdate�ļ�λ��
         if (responseHandler instanceof RangeFileAsyncHttpResponseHandler) {
             ((RangeFileAsyncHttpResponseHandler) responseHandler).updateRequestHeaders(uriRequest);
         }
@@ -1383,7 +1401,7 @@ public class AsyncHttpClient {
 
         @Override
         public long getContentLength() {
-            return -1;
+            return wrappedEntity == null ? 0 : wrappedEntity.getContentLength();
         }
 
         @Override

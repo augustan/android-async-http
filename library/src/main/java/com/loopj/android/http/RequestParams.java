@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,7 +88,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * client.post("http://myendpoint.com", params, responseHandler);
  * </pre>
  */
-public class RequestParams {
+@SuppressWarnings({"unchecked", "rawtypes"})
+public class RequestParams implements Serializable {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 6183707713844325166L;
 
     public final static String APPLICATION_OCTET_STREAM =
             "application/octet-stream";
@@ -147,8 +154,10 @@ public class RequestParams {
      * @param key   the key name for the intial param.
      * @param value the value string for the initial param.
      */
+    @SuppressWarnings("serial")
     public RequestParams(final String key, final String value) {
-        this(new HashMap<String, String>() {{
+        this(new HashMap<String, String>() {
+        {
             put(key, value);
         }});
     }
@@ -192,11 +201,23 @@ public class RequestParams {
      * @throws java.io.FileNotFoundException throws if wrong File argument was passed
      */
     public void put(String key, File file) throws FileNotFoundException {
-        put(key, file, null);
+        put(key, file, null, null);
     }
 
     /**
-     * Adds a file to the request.
+     * Adds a file to the request with custom provided file name
+     *
+     * @param key            the key name for the new param.
+     * @param file           the file to add.
+     * @param customFileName file name to use instead of real file name
+     * @throws java.io.FileNotFoundException throws if wrong File argument was passed
+     */
+    public void put(String key, String customFileName, File file) throws FileNotFoundException {
+        put(key, file, null, customFileName);
+    }
+
+    /**
+     * Adds a file to the request with custom provided file content-type
      *
      * @param key         the key name for the new param.
      * @param file        the file to add.
@@ -204,11 +225,24 @@ public class RequestParams {
      * @throws java.io.FileNotFoundException throws if wrong File argument was passed
      */
     public void put(String key, File file, String contentType) throws FileNotFoundException {
+        put(key, file, contentType, null);
+    }
+
+    /**
+     * Adds a file to the request with both custom provided file content-type and file name
+     *
+     * @param key            the key name for the new param.
+     * @param file           the file to add.
+     * @param contentType    the content type of the file, eg. application/json
+     * @param customFileName file name to use instead of real file name
+     * @throws java.io.FileNotFoundException throws if wrong File argument was passed
+     */
+    public void put(String key, File file, String contentType, String customFileName) throws FileNotFoundException {
         if (file == null || !file.exists()) {
             throw new FileNotFoundException();
         }
         if (key != null) {
-            fileParams.put(key, new FileWrapper(file, contentType));
+            fileParams.put(key, new FileWrapper(file, contentType, customFileName));
         }
     }
 
@@ -494,7 +528,7 @@ public class RequestParams {
         // Add file params
         for (ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
             FileWrapper fileWrapper = entry.getValue();
-            entity.addPart(entry.getKey(), fileWrapper.file, fileWrapper.contentType);
+            entity.addPart(entry.getKey(), fileWrapper.file, fileWrapper.contentType, fileWrapper.customFileName);
         }
 
         return entity;
@@ -557,13 +591,19 @@ public class RequestParams {
         return URLEncodedUtils.format(getParamsList(), contentEncoding);
     }
 
-    public static class FileWrapper {
+    public static class FileWrapper implements Serializable {
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 8955157774102141321L;
         public final File file;
         public final String contentType;
+        public final String customFileName;
 
-        public FileWrapper(File file, String contentType) {
+        public FileWrapper(File file, String contentType, String customFileName) {
             this.file = file;
             this.contentType = contentType;
+            this.customFileName = customFileName;
         }
     }
 
