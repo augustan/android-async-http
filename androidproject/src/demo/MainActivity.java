@@ -84,7 +84,7 @@ public class MainActivity extends Activity {
             public void run() {
                 Object o = HttpEnging.sendPostSync(HttpTag.TRANSPARENT_TAG, "http://www.baidu.com", null);
                 if (o != null) {
-                    
+                    o = null;
                 }
             }
         }).start();
