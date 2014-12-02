@@ -95,7 +95,7 @@ public class SyncHttpClient extends AsyncHttpClient {
          * will execute the request directly
 		*/
         // fixbug ClientProtocolException: need new httpContext
-		// 用同一个httpclient发起多次同步请求，httpContext需要重置
+		// 浣跨敤httpclient澶氭鍙戦�佽姹傛椂锛屽繀椤婚噸缃甴ttpContext
         httpContext = new SyncBasicHttpContext(new BasicHttpContext());
         newAsyncHttpRequest(client, httpContext, uriRequest, contentType, responseHandler, context).run();
 
