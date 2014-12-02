@@ -22,7 +22,9 @@ import android.content.Context;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.protocol.SyncBasicHttpContext;
 
 /**
  * Processes http requests in synchronous mode, so your caller thread will be blocked on each
@@ -92,6 +94,8 @@ public class SyncHttpClient extends AsyncHttpClient {
 		/*
          * will execute the request directly
 		*/
+        // fixbug ClientProtocolException: need new httpContext
+        httpContext = new SyncBasicHttpContext(new BasicHttpContext());
         newAsyncHttpRequest(client, httpContext, uriRequest, contentType, responseHandler, context).run();
 
         // Return a Request Handle that cannot be used to cancel the request
