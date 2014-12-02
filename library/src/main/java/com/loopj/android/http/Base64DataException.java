@@ -19,6 +19,11 @@ package com.loopj.android.http;
 import java.io.IOException;
 
 public class Base64DataException extends IOException {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 6202169648138183053L;
+
     public Base64DataException(String detailMessage) {
         super(detailMessage);
     }
