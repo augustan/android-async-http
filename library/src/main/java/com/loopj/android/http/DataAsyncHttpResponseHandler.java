@@ -18,14 +18,15 @@
 
 package com.loopj.android.http;
 
-import android.os.Message;
-import android.util.Log;
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.util.ByteArrayBuffer;
 
-import java.io.IOException;
-import java.io.InputStream;
+import android.util.Log;
+
+import com.loopj.android.http.model.HttpProcessMessage;
 
 public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHandler {
     private static final String LOG_TAG = "DataAsyncHttpResponseHandler";
@@ -55,7 +56,7 @@ public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHand
 
     // Methods which emulate android's Handler and Message methods
     @Override
-    protected void handleMessage(Message message) {
+    protected void handleMessage(HttpProcessMessage message) {
         super.handleMessage(message);
         Object[] response;
 
