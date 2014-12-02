@@ -75,6 +75,8 @@ import java.io.OutputStream;
 import java.io.PushbackInputStream;
 import java.lang.reflect.Field;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1176,11 +1178,6 @@ public class AsyncHttpClient {
         responseHandler.setRequestHeaders(uriRequest.getAllHeaders());
         responseHandler.setRequestURI(uriRequest.getURI());
 
-        // fixbug ���Ҫ�����ļ���������û��context����Ҫupdate�ļ�λ��
-        if (responseHandler instanceof RangeFileAsyncHttpResponseHandler) {
-            ((RangeFileAsyncHttpResponseHandler) responseHandler).updateRequestHeaders(uriRequest);
-        }
-
         AsyncHttpRequest request = newAsyncHttpRequest(client, httpContext, uriRequest, contentType, responseHandler, context);
         threadPool.submit(request);
         RequestHandle requestHandle = new RequestHandle(request);
@@ -1194,9 +1191,6 @@ public class AsyncHttpClient {
                     requestMap.put(context, requestList);
                 }
             }
-
-//            if (responseHandler instanceof RangeFileAsyncHttpResponseHandler)
-//                ((RangeFileAsyncHttpResponseHandler) responseHandler).updateRequestHeaders(uriRequest);
 
             requestList.add(requestHandle);
 
@@ -1233,8 +1227,17 @@ public class AsyncHttpClient {
         if (url == null)
             return null;
 
-        if (shouldEncodeUrl)
-            url = url.replace(" ", "%20");
+        if (shouldEncodeUrl) {
+            try {
+                String decodedURL = URLDecoder.decode(url, "UTF-8");
+                URL _url = new URL(decodedURL);
+                URI _uri = new URI(_url.getProtocol(), _url.getUserInfo(), _url.getHost(), _url.getPort(), _url.getPath(), _url.getQuery(), _url.getRef());
+                url = _uri.toASCIIString();
+            } catch (Exception ex) {
+                // Should not really happen, added just for sake of validity
+                Log.e(LOG_TAG, "getUrlWithQueryString encoding URL", ex);
+            }
+        }
 
         if (params != null) {
             // Construct the query string and trim it, in case it

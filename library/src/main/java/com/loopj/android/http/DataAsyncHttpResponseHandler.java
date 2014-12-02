@@ -31,7 +31,7 @@ import com.loopj.android.http.model.HttpProcessMessage;
 public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHandler {
     private static final String LOG_TAG = "DataAsyncHttpResponseHandler";
 
-    protected static final int PROGRESS_DATA_MESSAGE = 6;
+    protected static final int PROGRESS_DATA_MESSAGE = 7;
 
     /**
      * Creates a new AsyncHttpResponseHandler
@@ -94,18 +94,18 @@ public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHand
                 if (contentLength > Integer.MAX_VALUE) {
                     throw new IllegalArgumentException("HTTP entity too large to be buffered in memory");
                 }
-                if (contentLength < 0) {
-                    contentLength = BUFFER_SIZE;
-                }
+                int buffersize = (contentLength < 0) ? BUFFER_SIZE : (int) contentLength;
                 try {
-                    ByteArrayBuffer buffer = new ByteArrayBuffer((int) contentLength);
+                    ByteArrayBuffer buffer = new ByteArrayBuffer(buffersize);
                     try {
                         byte[] tmp = new byte[BUFFER_SIZE];
-                        int l;
+                        int l, count = 0;
                         // do not send messages if request has been cancelled
                         while ((l = instream.read(tmp)) != -1 && !Thread.currentThread().isInterrupted()) {
+                            count += l;
                             buffer.append(tmp, 0, l);
                             sendProgressDataMessage(copyOfRange(tmp, 0, l));
+                            sendProgressMessage(count, (int) (contentLength <= 0 ? 1 : contentLength));
                         }
                     } finally {
                         AsyncHttpClient.silentCloseInputStream(instream);

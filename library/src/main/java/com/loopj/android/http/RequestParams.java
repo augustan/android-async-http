@@ -156,8 +156,7 @@ public class RequestParams implements Serializable {
      */
     @SuppressWarnings("serial")
     public RequestParams(final String key, final String value) {
-        this(new HashMap<String, String>() {
-        {
+        this(new HashMap<String, String>() {{
             put(key, value);
         }});
     }
