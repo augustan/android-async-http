@@ -18,10 +18,9 @@
 
 package com.loopj.android.http;
 
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-import android.util.Log;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -30,9 +29,10 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.util.ByteArrayBuffer;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
+import android.os.Looper;
+import android.util.Log;
+
+import com.loopj.android.http.model.HttpProcessMessage;
 
 /**
  * Used to intercept and handle the responses from requests made using {@link AsyncHttpClient}. The
@@ -95,12 +95,12 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     public static final String DEFAULT_CHARSET = "UTF-8";
     public static final String UTF8_BOM = "\uFEFF";
     private String responseCharset = DEFAULT_CHARSET;
-    private Handler handler;
+//    private Handler handler;
     private boolean useSynchronousMode;
 
     private URI requestURI = null;
     private Header[] requestHeaders = null;
-    private Looper looper = null;
+//    private Looper looper = null;
 
     @Override
     public URI getRequestURI() {
@@ -125,19 +125,19 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     /**
      * Avoid leaks by using a non-anonymous handler class.
      */
-    private static class ResponderHandler extends Handler {
-        private final AsyncHttpResponseHandler mResponder;
-
-        ResponderHandler(AsyncHttpResponseHandler mResponder, Looper looper) {
-            super(looper);
-            this.mResponder = mResponder;
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            mResponder.handleMessage(msg);
-        }
-    }
+//    private static class ResponderHandler extends Handler {
+//        private final AsyncHttpResponseHandler mResponder;
+//
+//        ResponderHandler(AsyncHttpResponseHandler mResponder, Looper looper) {
+//            super(looper);
+//            this.mResponder = mResponder;
+//        }
+//
+//        @Override
+//        public void handleMessage(Message msg) {
+//            mResponder.handleMessage(msg);
+//        }
+//    }
 
     @Override
     public boolean getUseSynchronousMode() {
@@ -147,19 +147,19 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     @Override
     public void setUseSynchronousMode(boolean sync) {
         // A looper must be prepared before setting asynchronous mode.
-        if (!sync && looper == null) {
-            sync = true;
-            Log.w(LOG_TAG, "Current thread has not called Looper.prepare(). Forcing synchronous mode.");
-        }
-
-        // If using asynchronous mode.
-        if (!sync && handler == null) {
-            // Create a handler on current thread to submit tasks
-            handler = new ResponderHandler(this, looper);
-        } else if (sync && handler != null) {
-            // TODO: Consider adding a flag to remove all queued messages.
-            handler = null;
-        }
+//        if (!sync && looper == null) {
+//            sync = true;
+//            Log.w(LOG_TAG, "Current thread has not called Looper.prepare(). Forcing synchronous mode.");
+//        }
+//
+//        // If using asynchronous mode.
+//        if (!sync && handler == null) {
+//            // Create a handler on current thread to submit tasks
+//            handler = new ResponderHandler(this, looper);
+//        } else if (sync && handler != null) {
+//            // TODO: Consider adding a flag to remove all queued messages.
+//            handler = null;
+//        }
 
         useSynchronousMode = sync;
     }
@@ -193,7 +193,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * @param looper The looper to work with
      */
     public AsyncHttpResponseHandler(Looper looper) {
-        this.looper = looper == null ? Looper.myLooper() : looper;
+//        this.looper = looper == null ? Looper.myLooper() : looper;
         // Use asynchronous mode by default.
         setUseSynchronousMode(false);
     }
@@ -301,7 +301,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     }
 
     // Methods which emulate android's Handler and Message methods
-    protected void handleMessage(Message message) {
+    protected void handleMessage(HttpProcessMessage message) {
         Object[] response;
 
         switch (message.what) {
@@ -353,13 +353,14 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
         }
     }
 
-    protected void sendMessage(Message msg) {
-        if (getUseSynchronousMode() || handler == null) {
-            handleMessage(msg);
-        } else if (!Thread.currentThread().isInterrupted()) { // do not send messages if request has been cancelled
-            AssertUtils.asserts(handler != null, "handler should not be null!");
-            handler.sendMessage(msg);
-        }
+    protected void sendMessage(HttpProcessMessage msg) {
+        handleMessage(msg);
+//        if (getUseSynchronousMode() || handler == null) {
+//            handleMessage(msg);
+//        } else if (!Thread.currentThread().isInterrupted()) { // do not send messages if request has been cancelled
+//            AssertUtils.asserts(handler != null, "handler should not be null!");
+//            handler.sendMessage(msg);
+//        }
     }
 
     /**
@@ -367,18 +368,18 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      *
      * @param runnable runnable instance, can be null
      */
-    protected void postRunnable(Runnable runnable) {
-        if (runnable != null) {
-            if (getUseSynchronousMode() || handler == null) {
-                // This response handler is synchronous, run on current thread
-                runnable.run();
-            } else {
-                // Otherwise, run on provided handler
-                AssertUtils.asserts(handler != null, "handler should not be null!");
-                handler.post(runnable);
-            }
-        }
-    }
+//    protected void postRunnable(Runnable runnable) {
+//        if (runnable != null) {
+//            if (getUseSynchronousMode() || handler == null) {
+//                // This response handler is synchronous, run on current thread
+//                runnable.run();
+//            } else {
+//                // Otherwise, run on provided handler
+//                AssertUtils.asserts(handler != null, "handler should not be null!");
+//                handler.post(runnable);
+//            }
+//        }
+//    }
 
     /**
      * Helper method to create Message instance from handler
@@ -387,8 +388,8 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * @param responseMessageData object to be passed to message receiver
      * @return Message instance, should not be null
      */
-    protected Message obtainMessage(int responseMessageId, Object responseMessageData) {
-        return Message.obtain(handler, responseMessageId, responseMessageData);
+    protected HttpProcessMessage obtainMessage(int responseMessageId, Object[] responseMessageData) {
+        return HttpProcessMessage.obtain(responseMessageId, responseMessageData);
     }
 
     @Override
