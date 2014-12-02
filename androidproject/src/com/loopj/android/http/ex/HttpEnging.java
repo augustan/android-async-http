@@ -19,19 +19,17 @@ public class HttpEnging {
     private static HttpEnging engine = null;
 
     private Context context;
-    private boolean isOnlineEnv = false;
+    private boolean needSSLAuth = true; // HTTPS使用SSL验证
     private DataDispatchHelper dispatch;
 
     private HttpHelper mHttpHelper = null;
     
     // 初始化
-    synchronized public static void create(Context context, boolean isOnlineEnv) {
+    synchronized public static void create(Context context) {
         if (engine == null) {
             engine = new HttpEnging();
             engine.context = context;
-            engine.isOnlineEnv = isOnlineEnv;
             engine.dispatch = new DataDispatchHelper();
-            ALog.setDebug(ALog.isDebug() && !isOnlineEnv);
 
             engine.mHttpHelper = new HttpHelper();
         }
@@ -54,8 +52,12 @@ public class HttpEnging {
         return engine.context;
     }
 
-    public static boolean isOnlineEnv() {
-        return engine.isOnlineEnv;
+    public static void setNeedSSLAuth(boolean needSSLAuth) {
+        engine.needSSLAuth = needSSLAuth;
+    }
+    
+    public static boolean isNeedSSLAuth() {
+        return engine.needSSLAuth;
     }
 
     public static DataDispatchHelper getDispatch() {

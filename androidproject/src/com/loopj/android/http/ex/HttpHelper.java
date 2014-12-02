@@ -122,7 +122,7 @@ public class HttpHelper {
      */
     private SchemeRegistry getSchemeRegistry() {
         SSLSocketFactory apacheSSLSocketFactory = null;
-        if (HttpEnging.isOnlineEnv()) {
+        if (HttpEnging.isNeedSSLAuth()) {
             apacheSSLSocketFactory = SSLSocketFactory.getSocketFactory();
         } else {
             X509HostnameVerifier hostnameVerifier = SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;

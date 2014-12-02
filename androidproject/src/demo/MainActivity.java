@@ -47,7 +47,8 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
-        HttpEnging.create(this, true);
+        HttpEnging.create(this);
+        HttpEnging.setNeedSSLAuth(true);
         HttpEnging.setDebug(true);
 
         btn_test = (Button) findViewById(R.id.btn_test);
