@@ -22,12 +22,8 @@ import com.aug.android.http.utils.LogUtils;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpResponseException;
 
 import java.io.IOException;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 /**
  * Used to intercept and handle the responses from requests made using {@link AsyncHttpClient}.
@@ -100,46 +96,48 @@ public abstract class BinaryHttpResponseHandler extends AsyncHttpResponseHandler
 
     @Override
     public final void sendResponseMessage(HttpResponse response) throws IOException {
-        StatusLine status = response.getStatusLine();
-        Header[] contentTypeHeaders = response.getHeaders(AsyncHttpClient.HEADER_CONTENT_TYPE);
-        if (contentTypeHeaders.length != 1) {
-            //malformed/ambiguous HTTP Header, ABORT!
-            sendFailureMessage(
-                    status.getStatusCode(),
-                    response.getAllHeaders(),
-                    null,
-                    new HttpResponseException(
-                            status.getStatusCode(),
-                            "None, or more than one, Content-Type Header found!"
-                    )
-            );
-            return;
-        }
+        // august 不过滤contentTypeHeaders
         
-        Header contentTypeHeader = contentTypeHeaders[0];
-        boolean foundAllowedContentType = false;
-        for (String anAllowedContentType : getAllowedContentTypes()) {
-            try {
-                if (Pattern.matches(anAllowedContentType, contentTypeHeader.getValue())) {
-                    foundAllowedContentType = true;
-                }
-            } catch (PatternSyntaxException e) {
-                LogUtils.e("BinaryHttpResponseHandler", "Given pattern is not valid: " + anAllowedContentType, e);
-            }
-        }
-        if (!foundAllowedContentType) {
-            //Content-Type not in allowed list, ABORT!
-            sendFailureMessage(
-                    status.getStatusCode(),
-                    response.getAllHeaders(),
-                    null,
-                    new HttpResponseException(
-                            status.getStatusCode(),
-                            "Content-Type not allowed!"
-                    )
-            );
-            return;
-        }
+//        StatusLine status = response.getStatusLine();
+//        Header[] contentTypeHeaders = response.getHeaders(AsyncHttpClient.HEADER_CONTENT_TYPE);
+//        if (contentTypeHeaders.length != 1) {
+//            //malformed/ambiguous HTTP Header, ABORT!
+//            sendFailureMessage(
+//                    status.getStatusCode(),
+//                    response.getAllHeaders(),
+//                    null,
+//                    new HttpResponseException(
+//                            status.getStatusCode(),
+//                            "None, or more than one, Content-Type Header found!"
+//                    )
+//            );
+//            return;
+//        }
+//        
+//        Header contentTypeHeader = contentTypeHeaders[0];
+//        boolean foundAllowedContentType = false;
+//        for (String anAllowedContentType : getAllowedContentTypes()) {
+//            try {
+//                if (Pattern.matches(anAllowedContentType, contentTypeHeader.getValue())) {
+//                    foundAllowedContentType = true;
+//                }
+//            } catch (PatternSyntaxException e) {
+//                Log.e("BinaryHttpResponseHandler", "Given pattern is not valid: " + anAllowedContentType, e);
+//            }
+//        }
+//        if (!foundAllowedContentType) {
+//            //Content-Type not in allowed list, ABORT!
+//            sendFailureMessage(
+//                    status.getStatusCode(),
+//                    response.getAllHeaders(),
+//                    null,
+//                    new HttpResponseException(
+//                            status.getStatusCode(),
+//                            "Content-Type not allowed!"
+//                    )
+//            );
+//            return;
+//        }
         super.sendResponseMessage(response);
     }
 }
