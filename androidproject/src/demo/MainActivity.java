@@ -17,14 +17,14 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.loopj.android.http.RequestHandle;
-import com.loopj.android.http.ex.HttpEnging;
-import com.loopj.android.http.model.BaseNetRequest;
-import com.loopj.android.http.model.HttpTag;
-import com.loopj.android.http.model.IBinaryDataHandler;
-import com.loopj.android.http.model.INetBinaryReponse;
-import com.loopj.android.http.model.INetDownloadReponse;
-import com.loopj.android.http.model.INetTextReponse;
+import com.aug.android.http.ex.HttpEnging;
+import com.aug.android.http.lib.RequestHandle;
+import com.aug.android.http.model.BaseNetRequest;
+import com.aug.android.http.model.HttpTag;
+import com.aug.android.http.model.IBinaryDataHandler;
+import com.aug.android.http.model.INetBinaryReponse;
+import com.aug.android.http.model.INetDownloadReponse;
+import com.aug.android.http.model.INetTextReponse;
 import com.taobao.de.aligame.http.R;
 
 public class MainActivity extends Activity {
