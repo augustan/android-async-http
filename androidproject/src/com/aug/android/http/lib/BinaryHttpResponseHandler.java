@@ -18,7 +18,7 @@
 
 package com.aug.android.http.lib;
 
-import android.util.Log;
+import com.aug.android.http.utils.LogUtils;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -88,7 +88,7 @@ public abstract class BinaryHttpResponseHandler extends AsyncHttpResponseHandler
         if (allowedContentTypes != null) {
             mAllowedContentTypes = allowedContentTypes;
         } else {
-            Log.e(LOG_TAG, "Constructor passed allowedContentTypes was null !");
+            LogUtils.e(LOG_TAG, "Constructor passed allowedContentTypes was null !");
         }
     }
 
@@ -115,6 +115,7 @@ public abstract class BinaryHttpResponseHandler extends AsyncHttpResponseHandler
             );
             return;
         }
+        
         Header contentTypeHeader = contentTypeHeaders[0];
         boolean foundAllowedContentType = false;
         for (String anAllowedContentType : getAllowedContentTypes()) {
@@ -123,7 +124,7 @@ public abstract class BinaryHttpResponseHandler extends AsyncHttpResponseHandler
                     foundAllowedContentType = true;
                 }
             } catch (PatternSyntaxException e) {
-                Log.e("BinaryHttpResponseHandler", "Given pattern is not valid: " + anAllowedContentType, e);
+                LogUtils.e("BinaryHttpResponseHandler", "Given pattern is not valid: " + anAllowedContentType, e);
             }
         }
         if (!foundAllowedContentType) {

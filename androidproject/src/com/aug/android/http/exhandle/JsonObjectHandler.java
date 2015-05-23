@@ -5,8 +5,8 @@ import com.aug.android.http.lib.BinaryHttpResponseHandler;
 import com.aug.android.http.model.BaseNetRequest;
 import com.aug.android.http.model.INetJsonObjectReponse;
 import com.aug.android.http.model.TopErrorRsp;
-import com.aug.android.http.utils.ALog;
 import com.aug.android.http.utils.HttpUtils;
+import com.aug.android.http.utils.LogUtils;
 import com.google.gson.Gson;
 
 import org.apache.http.Header;
@@ -43,7 +43,7 @@ public class JsonObjectHandler extends BinaryHttpResponseHandler {
                 return;
             }
             
-            // TODO [ajj] : content 可预先解密
+            // TODO binaryData 可预先解密
             
             String content = getResponseString(binaryData);
             String json = content.trim();
@@ -58,7 +58,7 @@ public class JsonObjectHandler extends BinaryHttpResponseHandler {
                         notifyBusinessOK(jsonResult);
                     }
                 } catch (Exception e) {
-                    ALog.e(e.toString());
+                    e.printStackTrace();
                     notifyHttpError(e, content);
                     return;
                 }
@@ -67,7 +67,7 @@ public class JsonObjectHandler extends BinaryHttpResponseHandler {
                 try {
                     resp = new Gson().fromJson(content, TopErrorRsp.class);
                 } catch (Exception e) {
-                    ALog.e(e.toString());
+                    LogUtils.e("json", e.toString());
                     notifyHttpError(e, content);
                     return;
                 }

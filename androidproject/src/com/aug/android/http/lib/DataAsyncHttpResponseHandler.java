@@ -18,15 +18,14 @@
 
 package com.aug.android.http.lib;
 
-import java.io.IOException;
-import java.io.InputStream;
+import com.aug.android.http.model.HttpProcessMessage;
+import com.aug.android.http.utils.LogUtils;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.util.ByteArrayBuffer;
 
-import android.util.Log;
-
-import com.aug.android.http.model.HttpProcessMessage;
+import java.io.IOException;
+import java.io.InputStream;
 
 public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHandler {
     private static final String LOG_TAG = "DataAsyncHttpResponseHandler";
@@ -46,7 +45,7 @@ public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHand
      * @param responseBody response body received so far
      */
     public void onProgressData(byte[] responseBody) {
-        Log.d(LOG_TAG, "onProgressData(byte[]) was not overriden, but callback was received");
+        LogUtils.d(LOG_TAG, "onProgressData(byte[]) was not overriden, but callback was received");
     }
 
 
@@ -67,10 +66,10 @@ public abstract class DataAsyncHttpResponseHandler extends AsyncHttpResponseHand
                     try {
                         onProgressData((byte[]) response[0]);
                     } catch (Throwable t) {
-                        Log.e(LOG_TAG, "custom onProgressData contains an error", t);
+                        LogUtils.e(LOG_TAG, "custom onProgressData contains an error", t);
                     }
                 } else {
-                    Log.e(LOG_TAG, "PROGRESS_DATA_MESSAGE didn't got enough params");
+                    LogUtils.e(LOG_TAG, "PROGRESS_DATA_MESSAGE didn't got enough params");
                 }
                 break;
         }

@@ -18,7 +18,7 @@
 
 package com.aug.android.http.lib;
 
-import android.util.Log;
+import com.aug.android.http.utils.LogUtils;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -67,7 +67,7 @@ public abstract class RangeFileAsyncHttpResponseHandler extends FileAsyncHttpRes
                         append = false;
                         current = 0;
                     } else {
-                        Log.v(LOG_TAG, AsyncHttpClient.HEADER_CONTENT_RANGE + ": " + header.getValue());
+                        LogUtils.v(LOG_TAG, AsyncHttpClient.HEADER_CONTENT_RANGE + ": " + header.getValue());
                     }
                     sendSuccessMessage(status.getStatusCode(), response.getAllHeaders(), getResponseData(response.getEntity()));
                 }

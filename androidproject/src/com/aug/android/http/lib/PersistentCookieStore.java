@@ -18,13 +18,14 @@
 
 package com.aug.android.http.lib;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.text.TextUtils;
-import android.util.Log;
+import com.aug.android.http.utils.LogUtils;
 
 import org.apache.http.client.CookieStore;
 import org.apache.http.cookie.Cookie;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.text.TextUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -187,7 +188,7 @@ public class PersistentCookieStore implements CookieStore {
             ObjectOutputStream outputStream = new ObjectOutputStream(os);
             outputStream.writeObject(cookie);
         } catch (IOException e) {
-            Log.d(LOG_TAG, "IOException in encodeCookie", e);
+            LogUtils.e(LOG_TAG, "IOException in encodeCookie", e);
             return null;
         }
 
@@ -208,9 +209,9 @@ public class PersistentCookieStore implements CookieStore {
             ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
             cookie = ((SerializableCookie) objectInputStream.readObject()).getCookie();
         } catch (IOException e) {
-            Log.d(LOG_TAG, "IOException in decodeCookie", e);
+            LogUtils.e(LOG_TAG, "IOException in decodeCookie", e);
         } catch (ClassNotFoundException e) {
-            Log.d(LOG_TAG, "ClassNotFoundException in decodeCookie", e);
+            LogUtils.e(LOG_TAG, "ClassNotFoundException in decodeCookie", e);
         }
 
         return cookie;

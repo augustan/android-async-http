@@ -18,7 +18,7 @@
 
 package com.aug.android.http.lib;
 
-import android.util.Log;
+import com.aug.android.http.utils.LogUtils;
 
 import org.apache.http.Header;
 
@@ -120,7 +120,7 @@ public abstract class TextHttpResponseHandler extends AsyncHttpResponseHandler {
             }
             return toReturn;
         } catch (UnsupportedEncodingException e) {
-            Log.e(LOG_TAG, "Encoding response into string failed", e);
+            LogUtils.e(LOG_TAG, "Encoding response into string failed", e);
             return null;
         }
     }

@@ -1,9 +1,9 @@
 package com.aug.android.http.utils;
 
+import com.aug.android.http.model.BaseNetRequest;
+
 import android.os.Handler;
 import android.os.Looper;
-
-import com.aug.android.http.model.BaseNetRequest;
 
 /**
  * 网络数据返回后，先在后台线程中经过dispatch（...）处理，再通过runOnUIThread（...)把转化后的class发到UI线程处理
@@ -18,7 +18,7 @@ public class DataDispatchHelper {
         try {
             mHandler = new Handler(Looper.getMainLooper());
         } catch (Exception e) {
-            ALog.e(e.toString());
+            LogUtils.e(e.toString());
         }
     }
     

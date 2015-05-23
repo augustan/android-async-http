@@ -18,9 +18,8 @@
 
 package com.aug.android.http.lib;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
+import com.aug.android.http.model.HttpProcessMessage;
+import com.aug.android.http.utils.LogUtils;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -30,9 +29,10 @@ import org.apache.http.client.HttpResponseException;
 import org.apache.http.util.ByteArrayBuffer;
 
 import android.os.Looper;
-import android.util.Log;
 
-import com.aug.android.http.model.HttpProcessMessage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
 
 /**
  * Used to intercept and handle the responses from requests made using {@link AsyncHttpClient}. The
@@ -149,7 +149,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
         // A looper must be prepared before setting asynchronous mode.
 //        if (!sync && looper == null) {
 //            sync = true;
-//            Log.w(LOG_TAG, "Current thread has not called Looper.prepare(). Forcing synchronous mode.");
+//            LogUtils.w(LOG_TAG, "Current thread has not called Looper.prepare(). Forcing synchronous mode.");
 //        }
 //
 //        // If using asynchronous mode.
@@ -205,7 +205,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * @param totalSize    total size of file
      */
     public void onProgress(int bytesWritten, int totalSize) {
-        Log.v(LOG_TAG, String.format("Progress %d from %d (%2.0f%%)", bytesWritten, totalSize, (totalSize > 0) ? (bytesWritten * 1.0 / totalSize) * 100 : -1));
+        LogUtils.v(LOG_TAG, String.format("Progress %d from %d (%2.0f%%)", bytesWritten, totalSize, (totalSize > 0) ? (bytesWritten * 1.0 / totalSize) * 100 : -1));
     }
 
     /**
@@ -258,11 +258,11 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
      * @param retryNo number of retry
      */
     public void onRetry(int retryNo) {
-        Log.d(LOG_TAG, String.format("Request retry no. %d", retryNo));
+        LogUtils.d(LOG_TAG, String.format("Request retry no. %d", retryNo));
     }
 
     public void onCancel() {
-        Log.d(LOG_TAG, "Request got cancelled");
+        LogUtils.d(LOG_TAG, "Request got cancelled");
     }
 
     @Override
@@ -310,7 +310,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                 if (response != null && response.length >= 3) {
                     onSuccess((Integer) response[0], (Header[]) response[1], (byte[]) response[2]);
                 } else {
-                    Log.e(LOG_TAG, "SUCCESS_MESSAGE didn't got enough params");
+                    LogUtils.e(LOG_TAG, "SUCCESS_MESSAGE didn't got enough params");
                 }
                 break;
             case FAILURE_MESSAGE:
@@ -318,7 +318,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                 if (response != null && response.length >= 4) {
                     onFailure((Integer) response[0], (Header[]) response[1], (byte[]) response[2], (Throwable) response[3]);
                 } else {
-                    Log.e(LOG_TAG, "FAILURE_MESSAGE didn't got enough params");
+                    LogUtils.e(LOG_TAG, "FAILURE_MESSAGE didn't got enough params");
                 }
                 break;
             case START_MESSAGE:
@@ -333,10 +333,10 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                     try {
                         onProgress((Integer) response[0], (Integer) response[1]);
                     } catch (Throwable t) {
-                        Log.e(LOG_TAG, "custom onProgress contains an error", t);
+                        LogUtils.e(LOG_TAG, "custom onProgress contains an error", t);
                     }
                 } else {
-                    Log.e(LOG_TAG, "PROGRESS_MESSAGE didn't got enough params");
+                    LogUtils.e(LOG_TAG, "PROGRESS_MESSAGE didn't got enough params");
                 }
                 break;
             case RETRY_MESSAGE:
@@ -344,7 +344,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
                 if (response != null && response.length == 1) {
                     onRetry((Integer) response[0]);
                 } else {
-                    Log.e(LOG_TAG, "RETRY_MESSAGE didn't get enough params");
+                    LogUtils.e(LOG_TAG, "RETRY_MESSAGE didn't get enough params");
                 }
                 break;
             case CANCEL_MESSAGE:

@@ -18,7 +18,7 @@
 
 package com.aug.android.http.lib;
 
-import android.util.Log;
+import com.aug.android.http.utils.LogUtils;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -221,7 +221,7 @@ public class JsonStreamerEntity implements HttpEntity {
         long elapsedTime = System.currentTimeMillis() - now;
         os.write((elapsedTime + "}").getBytes());
 
-        Log.i(LOG_TAG, "Uploaded JSON in " + Math.floor(elapsedTime / 1000) + " seconds");
+        LogUtils.i(LOG_TAG, "Uploaded JSON in " + Math.floor(elapsedTime / 1000) + " seconds");
 
         // Flush the contents up the stream.
         os.flush();

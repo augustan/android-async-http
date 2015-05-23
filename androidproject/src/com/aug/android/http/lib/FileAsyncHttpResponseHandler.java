@@ -18,12 +18,13 @@
 
 package com.aug.android.http.lib;
 
-import android.content.Context;
-import android.util.Log;
+import com.aug.android.http.utils.LogUtils;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+
+import android.content.Context;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -112,7 +113,7 @@ public abstract class FileAsyncHttpResponseHandler extends AsyncHttpResponseHand
             assert context != null;
             return File.createTempFile("temp_", "_handled", context.getCacheDir());
         } catch (IOException e) {
-            Log.e(LOG_TAG, "Cannot create temporary file", e);
+            LogUtils.e(LOG_TAG, "Cannot create temporary file", e);
         }
         return null;
     }

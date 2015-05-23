@@ -1,11 +1,10 @@
 package com.aug.android.http.exhandle;
 
-import android.util.Log;
-
 import com.aug.android.http.ex.HttpEnging;
 import com.aug.android.http.lib.RangeFileAsyncHttpResponseHandler;
 import com.aug.android.http.model.BaseNetRequest;
 import com.aug.android.http.model.INetDownloadReponse;
+import com.aug.android.http.utils.LogUtils;
 
 import org.apache.http.Header;
 
@@ -43,7 +42,7 @@ public class DownloadHandler extends RangeFileAsyncHttpResponseHandler {
     public void onProgress(int bytesWritten, int totalSize) {
         if (response != null) {
             notifyRecvProgress(bytesWritten, totalSize);
-            Log.e("down_load", String.format("%d / %d", bytesWritten, totalSize));
+            LogUtils.v("down_load", String.format("%d / %d", bytesWritten, totalSize));
         }
     }
 

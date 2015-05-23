@@ -46,7 +46,7 @@ public class BinaryDataHandler extends BinaryHttpResponseHandler {
             }
 
             dataHandler.onDataReceived(request, binaryData);
-            if (dataHandler.processSuccess()) {
+            if (dataHandler.isProcessSuccess()) {
                 nofityDataReceived(request, dataHandler);
             } else {
                 notifyHttpError(new Throwable("process bin data failed"), "");

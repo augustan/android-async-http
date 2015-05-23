@@ -1,6 +1,6 @@
 package com.aug.android.http.ex;
 
-import com.aug.android.http.utils.ALog;
+import com.aug.android.http.utils.LogUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -48,13 +48,13 @@ public class HttpSSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
 		try {
 			mSSLContext = SSLContext.getInstance("TLS");
 		} catch (NoSuchAlgorithmException e1) {
-			ALog.v(e1.toString());
+			LogUtils.v(e1.toString());
 		}
 
 		try {
 			mSSLContext.init(null, new TrustManager[] { mTm }, null);
 		} catch (KeyManagementException e) {
-			ALog.v(e.toString());
+			LogUtils.v(e.toString());
 		}
 	}
 
@@ -82,11 +82,11 @@ public class HttpSSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
 			portFiled.set(impl, port);
 
 		} catch (NoSuchFieldException e) {
-			ALog.v(e.toString());
+			LogUtils.v(e.toString());
 		} catch (IllegalArgumentException e) {
-			ALog.v(e.toString());
+			LogUtils.v(e.toString());
 		} catch (IllegalAccessException e) {
-			ALog.v(e.toString());
+			LogUtils.v(e.toString());
 		}
 
 		return sk;

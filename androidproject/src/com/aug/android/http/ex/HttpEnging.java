@@ -1,7 +1,5 @@
 package com.aug.android.http.ex;
 
-import android.content.Context;
-
 import com.aug.android.http.lib.RequestHandle;
 import com.aug.android.http.model.BaseNetRequest;
 import com.aug.android.http.model.HttpTag;
@@ -9,8 +7,10 @@ import com.aug.android.http.model.IBinaryDataHandler;
 import com.aug.android.http.model.IHttpReponse;
 import com.aug.android.http.model.INetBinaryReponse;
 import com.aug.android.http.model.INetDownloadReponse;
-import com.aug.android.http.utils.ALog;
 import com.aug.android.http.utils.DataDispatchHelper;
+import com.aug.android.http.utils.LogUtils;
+
+import android.content.Context;
 
 import java.util.Map;
 
@@ -19,7 +19,7 @@ public class HttpEnging {
     private static HttpEnging engine = null;
 
     private Context context;
-    private boolean needSSLAuth = true; // HTTPS使用SSL验证
+    private static boolean needSSLAuth = true; // HTTPS使用SSL验证
     private DataDispatchHelper dispatch;
 
     private HttpHelper mHttpHelper = null;
@@ -45,19 +45,29 @@ public class HttpEnging {
     }
     
     public static void setDebug(boolean debug) {
-        ALog.setDebug(debug);
+        LogUtils.setDebug(debug);
     }
 
     public static Context getContext() {
         return engine.context;
     }
 
-    public static void setNeedSSLAuth(boolean needSSLAuth) {
-        engine.needSSLAuth = needSSLAuth;
+    synchronized public static void setNeedSSLAuth(boolean needSSLAuth) {
+        if (engine != null) {
+            if (HttpEnging.needSSLAuth != needSSLAuth) {
+                if (engine.mHttpHelper != null) {
+                    engine.mHttpHelper.release();
+                }
+                HttpEnging.needSSLAuth = needSSLAuth;
+                engine.mHttpHelper = new HttpHelper();
+            }
+        } else {
+            HttpEnging.needSSLAuth = needSSLAuth;
+        }
     }
     
     public static boolean isNeedSSLAuth() {
-        return engine.needSSLAuth;
+        return HttpEnging.needSSLAuth;
     }
 
     public static DataDispatchHelper getDispatch() {

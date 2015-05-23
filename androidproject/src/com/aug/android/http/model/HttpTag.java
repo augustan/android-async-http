@@ -1,6 +1,6 @@
 package com.aug.android.http.model;
 
-import com.aug.android.http.utils.ALog;
+import com.aug.android.http.utils.LogUtils;
 import com.google.gson.Gson;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -24,7 +24,7 @@ public class HttpTag {
         this.tagId = g_tag_id.addAndGet(1);
         this.tagName = tagName;
         this.clazz = clazz;
-        ALog.i("http_tag_init", tagName + " = " + tagId);
+        LogUtils.i("http_tag_init", tagName + " = " + tagId);
     }
     
     public int getTagId() {
@@ -50,10 +50,23 @@ public class HttpTag {
                     result = ((TopErrorRsp) result).onPostParse();
                 }
             } catch (Exception e) {
-                ALog.e(e.toString());
+                LogUtils.e("json", e.toString());
                 throw e;
             }
         }
         return result;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        boolean equal = false;
+        if (o == this) {
+            equal = true;
+        } else if (o instanceof HttpTag) {
+            if (this.getTagName().equals(((HttpTag)o).getTagName())) {
+                equal = true;
+            }
+        } 
+        return equal;
     }
 }

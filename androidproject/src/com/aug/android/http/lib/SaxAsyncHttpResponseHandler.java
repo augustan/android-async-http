@@ -18,7 +18,7 @@
 
 package com.aug.android.http.lib;
 
-import android.util.Log;
+import com.aug.android.http.utils.LogUtils;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -102,9 +102,9 @@ public abstract class SaxAsyncHttpResponseHandler<T extends DefaultHandler> exte
                     inputStreamReader = new InputStreamReader(instream, DEFAULT_CHARSET);
                     rssReader.parse(new InputSource(inputStreamReader));
                 } catch (SAXException e) {
-                    Log.e(LOG_TAG, "getResponseData exception", e);
+                    LogUtils.e(LOG_TAG, "getResponseData exception", e);
                 } catch (ParserConfigurationException e) {
-                    Log.e(LOG_TAG, "getResponseData exception", e);
+                    LogUtils.e(LOG_TAG, "getResponseData exception", e);
                 } finally {
                     AsyncHttpClient.silentCloseInputStream(instream);
                     if (inputStreamReader != null) {

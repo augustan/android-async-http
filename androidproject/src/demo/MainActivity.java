@@ -147,7 +147,7 @@ public class MainActivity extends Activity {
                 // TODO Auto-generated method stub
                 HttpEnging.setDebug(true);
 
-                if (dataHandler.processSuccess()) {
+                if (dataHandler.isProcessSuccess()) {
                     Object bmpObject = dataHandler.getDecodeData();
                     image.setImageBitmap((Bitmap) bmpObject);
                 }
@@ -165,7 +165,7 @@ public class MainActivity extends Activity {
             Bitmap decodeBmp = null;
 
             @Override
-            public boolean processSuccess() {
+            public boolean isProcessSuccess() {
                 return decodeBmp != null;
             }
 

@@ -1,73 +1,69 @@
 
 package com.aug.android.http.model;
 
+import com.aug.android.http.utils.LogUtils;
+
 import android.text.TextUtils;
 
-import com.aug.android.http.utils.ALog;
-import com.google.gson.annotations.SerializedName;
-
-/**
- * @author <a href="mailto:lujian.lj@alibaba-inc.com">鲁建</a>
- * @version 2014年8月20日上午11:28:34
- */
 public class TopErrorRsp extends HttpModel {
-    public static final String INVALID_TOKEN_ERROR_CODE = "27";
-    public static final String INVALID_TOKEN_ERROR_MSG = "Invalid session";
-    public static final String SECURITY_ERROR_CODE = "53";
+    private static final String INVALID_TOKEN_ERROR_CODE = "27";
+    private static final String INVALID_TOKEN_ERROR_MSG = "Invalid session";
+    private static final String SECURITY_ERROR_CODE = "53";
 
     public static final String TOP_RESPONSE_BASE_TAG_ERROR_RESPONSE = "error_response";
-    protected static final String TOP_RESPONSE_BASE_TAG_CODE = "code";
-    protected static final String TOP_RESPONSE_BASE_TAG_MSG = "msg";
-    protected static final String TOP_RESPONSE_BASE_TAG_SUB_CODE = "sub_code";
-    protected static final String TOP_RESPONSE_BASE_TAG_SUB_MSG = "sub_msg";
 
     private static final TopErrorRsp s_errorResp = new TopErrorRsp();
     static {
-        s_errorResp.errorMsg = new TopErrorRspMsg();
-        s_errorResp.errorMsg.topRspErrCode = INVALID_TOKEN_ERROR_CODE;
-        s_errorResp.errorMsg.topRspErrMsg = INVALID_TOKEN_ERROR_MSG;
+        s_errorResp.error_response = new TopErrorRspMsg();
+        s_errorResp.error_response.code = INVALID_TOKEN_ERROR_CODE;
+        s_errorResp.error_response.msg = INVALID_TOKEN_ERROR_MSG;
     }
 
-    @SerializedName(TOP_RESPONSE_BASE_TAG_ERROR_RESPONSE)
-    private TopErrorRspMsg errorMsg;
+    private TopErrorRspMsg error_response;
 
+    /**
+     * 获取标准top错误结构体
+     */
     public static TopErrorRsp makeInvalidSessionRsp() {
         return s_errorResp;
     }
 
-    public TopErrorRspMsg getErrorMsg() {
-        return errorMsg;
+    // TOP返回的错误码
+    private String getTopErrCode() {
+        return error_response == null ? "" : changeResultToInvalidSesson(error_response.getCode());
     }
 
-    public String getTopErrCode() {
-        return errorMsg == null ? "" : changeResultToInvalidSesson(errorMsg.getTopRspErrCode());
-    }
-
-    public String getTopErrMsg() {
-        return errorMsg == null ? "" : errorMsg.getTopRspErrMsg();
+    // TOP返回的错误描述
+    private String getTopErrMsg() {
+        return error_response == null ? "" : error_response.getMsg();
     }
 
     public boolean isTopSuccess() {
-        return errorMsg == null;
+        return error_response == null;
     }
 
     public boolean isAuthInvalide() {
         boolean isAuthFail = !isTopSuccess() && !TextUtils.isEmpty(getTopErrCode())
                 && getTopErrCode().equals(INVALID_TOKEN_ERROR_CODE);
         if (isAuthFail) {
-            ALog.v("授权失败或者过期");
+            LogUtils.v("授权失败或者过期");
         }
         return isAuthFail;
     }
 
-    public String getTopRspSubErrCode() {
-        return errorMsg == null ? "" : errorMsg.getTopRspSubErrCode();
+    // TOP返回的业务错误码
+    private String getTopRspSubErrCode() {
+        return error_response == null ? "" : error_response.getSubCode();
     }
 
-    public String getTopRspSubErrMsg() {
-        return errorMsg == null ? "" : errorMsg.getTopRspSubErrMsg();
+    // TOP返回的业务错误描述
+    private String getTopRspSubErrMsg() {
+        return error_response == null ? "" : error_response.getSubMsg();
     }
 
+    /**
+     * 获取错误码，业务逻辑错误优先
+     */
     public String getRspErrCode() {
         String errCode = getTopRspSubErrCode();
         if (TextUtils.isEmpty(errCode)) {
@@ -76,10 +72,13 @@ public class TopErrorRsp extends HttpModel {
         return errCode;
     }
 
+    /**
+     * 获取错误描述，业务逻辑错误优先
+     */
     public String getRspErrMsg() {
-        String errMsg = getTopErrMsg();
+        String errMsg = getTopRspSubErrMsg();
         if (TextUtils.isEmpty(errMsg)) {
-            errMsg = getTopRspSubErrMsg();
+            errMsg = getTopErrMsg();
         }
         return errMsg;
     }
@@ -105,34 +104,30 @@ public class TopErrorRsp extends HttpModel {
         return this;
     }
     
-    public static class TopErrorRspMsg {
+    private static class TopErrorRspMsg {
 
-        @SerializedName(TOP_RESPONSE_BASE_TAG_CODE)
-        private String topRspErrCode;
+        private String code;
 
-        @SerializedName(TOP_RESPONSE_BASE_TAG_MSG)
-        private String topRspErrMsg;
+        private String msg;
 
-        @SerializedName(TOP_RESPONSE_BASE_TAG_SUB_CODE)
-        private String topRspSubErrCode;
+        private String sub_code;
 
-        @SerializedName(TOP_RESPONSE_BASE_TAG_SUB_MSG)
-        private String topRspSubErrMsg;
+        private String sub_msg;
 
-        public String getTopRspErrCode() {
-            return topRspErrCode;
+        public String getCode() {
+            return code;
         }
 
-        public String getTopRspErrMsg() {
-            return topRspErrMsg;
+        public String getMsg() {
+            return msg;
         }
 
-        public String getTopRspSubErrCode() {
-            return topRspSubErrCode;
+        public String getSubCode() {
+            return sub_code;
         }
 
-        public String getTopRspSubErrMsg() {
-            return topRspSubErrMsg;
+        public String getSubMsg() {
+            return sub_msg;
         }
     }
 

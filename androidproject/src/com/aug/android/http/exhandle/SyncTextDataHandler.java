@@ -1,8 +1,8 @@
 package com.aug.android.http.exhandle;
 
-import org.apache.http.Header;
-
 import com.aug.android.http.lib.TextHttpResponseHandler;
+
+import org.apache.http.Header;
 
 public class SyncTextDataHandler extends TextHttpResponseHandler {
 

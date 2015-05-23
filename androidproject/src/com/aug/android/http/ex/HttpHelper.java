@@ -1,4 +1,3 @@
-
 package com.aug.android.http.ex;
 
 import com.aug.android.http.exhandle.BinaryDataHandler;
@@ -19,8 +18,8 @@ import com.aug.android.http.model.INetBinaryReponse;
 import com.aug.android.http.model.INetDownloadReponse;
 import com.aug.android.http.model.INetJsonObjectReponse;
 import com.aug.android.http.model.INetTextReponse;
-import com.aug.android.http.utils.ALog;
 import com.aug.android.http.utils.HttpUtils;
+import com.aug.android.http.utils.LogUtils;
 
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
@@ -137,7 +136,7 @@ public class HttpHelper {
                 apacheSSLSocketFactory.setHostnameVerifier(hostnameVerifier);
 
             } catch (Exception e) {
-                ALog.e("socket exception = " + e);
+                LogUtils.e("socket exception = " + e);
             }
         }
 

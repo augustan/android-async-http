@@ -23,13 +23,14 @@
 
 package com.aug.android.http.lib;
 
-import android.text.TextUtils;
-import android.util.Log;
+import com.aug.android.http.utils.LogUtils;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
+
+import android.text.TextUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -97,7 +98,7 @@ class SimpleMultipartEntity implements HttpEntity {
             out.write(CR_LF);
         } catch (final IOException e) {
             // Shall not happen on ByteArrayOutputStream
-            Log.e(LOG_TAG, "addPart ByteArrayOutputStream exception", e);
+            LogUtils.e(LOG_TAG, "addPart ByteArrayOutputStream exception", e);
         }
     }
 
@@ -198,7 +199,7 @@ class SimpleMultipartEntity implements HttpEntity {
                 headerStream.write(CR_LF);
             } catch (IOException e) {
                 // Can't happen on ByteArrayOutputStream
-                Log.e(LOG_TAG, "createHeader ByteArrayOutputStream exception", e);
+                LogUtils.e(LOG_TAG, "createHeader ByteArrayOutputStream exception", e);
             }
             return headerStream.toByteArray();
         }

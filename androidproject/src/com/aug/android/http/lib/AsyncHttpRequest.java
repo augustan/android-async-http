@@ -18,7 +18,7 @@
 
 package com.aug.android.http.lib;
 
-import android.util.Log;
+import com.aug.android.http.utils.LogUtils;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpRequestRetryHandler;
@@ -111,7 +111,7 @@ public class AsyncHttpRequest implements Runnable {
             if (!isCancelled() && responseHandler != null) {
                 responseHandler.sendFailureMessage(0, null, null, e);
             } else {
-                Log.e("AsyncHttpRequest", "makeRequestWithRetries returned error, but handler is null", e);
+                LogUtils.e("AsyncHttpRequest", "makeRequestWithRetries returned error, but handler is null", e);
             }
         }
 
@@ -207,7 +207,7 @@ public class AsyncHttpRequest implements Runnable {
             }
         } catch (Exception e) {
             // catch anything else to ensure failure message is propagated
-            Log.e("AsyncHttpRequest", "Unhandled exception origin cause", e);
+            LogUtils.e("AsyncHttpRequest", "Unhandled exception origin cause", e);
             cause = new IOException("Unhandled exception: " + e.getMessage());
         }
 
