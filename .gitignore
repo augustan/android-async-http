@@ -8,10 +8,10 @@ build.num
 build
 
 # ADT
-.classpath
-.project
-.settings
-local.properties
+#.classpath
+#.project
+#.settings
+#local.properties
 bin
 gen
 _layouts
@@ -36,5 +36,5 @@ out
 
 # Maven
 target
-release.properties
-pom.xml.*
+#release.properties
+#pom.xml.*
