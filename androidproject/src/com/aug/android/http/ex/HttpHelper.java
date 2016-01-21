@@ -1,7 +1,17 @@
 package com.aug.android.http.ex;
 
+import java.lang.reflect.Constructor;
+import java.util.Map;
+
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.conn.ssl.X509HostnameVerifier;
+
 import com.aug.android.http.exhandle.BinaryDataHandler;
 import com.aug.android.http.exhandle.DownloadHandler;
+import com.aug.android.http.exhandle.ImageDownloadHandler;
 import com.aug.android.http.exhandle.JsonObjectHandler;
 import com.aug.android.http.exhandle.SyncJsonObjectHandler;
 import com.aug.android.http.exhandle.TextDataHandler;
@@ -14,21 +24,13 @@ import com.aug.android.http.model.BaseNetRequest;
 import com.aug.android.http.model.HttpTag;
 import com.aug.android.http.model.IBinaryDataHandler;
 import com.aug.android.http.model.IHttpReponse;
+import com.aug.android.http.model.IImageDownloadReponse;
 import com.aug.android.http.model.INetBinaryReponse;
 import com.aug.android.http.model.INetDownloadReponse;
 import com.aug.android.http.model.INetJsonObjectReponse;
 import com.aug.android.http.model.INetTextReponse;
 import com.aug.android.http.utils.HttpUtils;
 import com.aug.android.http.utils.LogUtils;
-
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.conn.ssl.X509HostnameVerifier;
-
-import java.lang.reflect.Constructor;
-import java.util.Map;
 
 public class HttpHelper {
 
@@ -54,6 +56,15 @@ public class HttpHelper {
     public RequestHandle downloadFile(BaseNetRequest request, INetDownloadReponse response,
             String filePath) {
         AsyncHttpResponseHandler responseHandler = new DownloadHandler(request, response, filePath);
+        RequestParams requestParams = new RequestParams(request.getParams());
+
+        HttpUtils.dumpHttpRequest(request, requestParams);
+        return mAsyncHttpClient.get(request.getUrl(), requestParams, responseHandler);
+    }
+
+    public RequestHandle downloadImage(BaseNetRequest request, IImageDownloadReponse response,
+            String filePath, IBinaryDataHandler dataHandler) {
+        AsyncHttpResponseHandler responseHandler = new ImageDownloadHandler(request, response, filePath, dataHandler);
         RequestParams requestParams = new RequestParams(request.getParams());
 
         HttpUtils.dumpHttpRequest(request, requestParams);

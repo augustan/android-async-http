@@ -90,7 +90,7 @@ public abstract class AsyncHttpResponseHandler implements ResponseHandlerInterfa
     protected static final int RETRY_MESSAGE = 5;
     protected static final int CANCEL_MESSAGE = 6;
 
-    protected static final int BUFFER_SIZE = 4096;
+    protected static final int BUFFER_SIZE = 4096 * 2;
 
     public static final String DEFAULT_CHARSET = "UTF-8";
     public static final String UTF8_BOM = "\uFEFF";

@@ -1,25 +1,24 @@
 package com.aug.android.http.exhandle;
 
+import java.io.File;
+
+import org.apache.http.Header;
+
 import com.aug.android.http.ex.HttpEnging;
 import com.aug.android.http.lib.RangeFileAsyncHttpResponseHandler;
 import com.aug.android.http.model.BaseNetRequest;
 import com.aug.android.http.model.INetDownloadReponse;
-import com.aug.android.http.utils.LogUtils;
-
-import org.apache.http.Header;
-
-import java.io.File;
 
 /**
  * 下载文件。字节流不在内存中缓存，直接写入文件
  */
 public class DownloadHandler extends RangeFileAsyncHttpResponseHandler {
 
-    private final BaseNetRequest request;
-    private final INetDownloadReponse response;
-    private final String filePath;
+    protected final BaseNetRequest request;
+    protected final INetDownloadReponse response;
+    protected final String filePath;
     
-    private File savedFile = null;
+    protected File savedFile = null;
     
     public DownloadHandler(BaseNetRequest request, INetDownloadReponse response, String filePath) {
         super(new File(filePath));
@@ -42,7 +41,7 @@ public class DownloadHandler extends RangeFileAsyncHttpResponseHandler {
     public void onProgress(int bytesWritten, int totalSize) {
         if (response != null) {
             notifyRecvProgress(bytesWritten, totalSize);
-            LogUtils.v("down_load", String.format("%d / %d", bytesWritten, totalSize));
+//            LogUtils.v("down_load", String.format("%d / %d", bytesWritten, totalSize));
         }
     }
 
@@ -66,7 +65,7 @@ public class DownloadHandler extends RangeFileAsyncHttpResponseHandler {
         });
     }
 
-    private void notifyHttpError(final Throwable error, final String content) {
+    protected void notifyHttpError(final Throwable error, final String content) {
         HttpEnging.getDispatch().runOnUIThread(new Runnable() {
             @Override
             public void run() {

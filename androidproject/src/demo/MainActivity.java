@@ -1,10 +1,7 @@
 
 package demo;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import android.app.Activity;
 import android.content.Context;
@@ -23,10 +20,9 @@ import com.aug.android.http.lib.RequestHandle;
 import com.aug.android.http.model.BaseNetRequest;
 import com.aug.android.http.model.HttpTag;
 import com.aug.android.http.model.IBinaryDataHandler;
-import com.aug.android.http.model.INetBinaryReponse;
+import com.aug.android.http.model.IImageDownloadReponse;
 import com.aug.android.http.model.INetDownloadReponse;
 import com.aug.android.http.model.INetTextReponse;
-import com.aug.android.image.ImageDecoder;
 import com.taobao.de.aligame.http.R;
 
 public class MainActivity extends Activity {
@@ -74,8 +70,8 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
 //                testSyncGet();
 //                 testHttpGet();
-//                 testGetImage();
-                testDownload();
+                 testGetImage();
+//                testDownload();
             }
         });
     }
@@ -124,77 +120,42 @@ public class MainActivity extends Activity {
     private void testGetImage() {
 
         String url = "http://img6.cache.netease.com/photo/0001/2014-11-21/ABIMUU6G00AN0001.jpg";
-        BaseNetRequest request = new BaseNetRequest(url);
-
-//        final String filePath = getFilePath(url);
-
-        HttpEnging.getBinaryDataAsync(request, new INetBinaryReponse() {
-
-            @Override
-            public void onHttpRecvError(BaseNetRequest request, Throwable error, String content) {
-                // TODO Auto-generated method stub
-                HttpEnging.setDebug(true);
-
-            }
-
-            @Override
-            public void onHttpRecvCancelled(BaseNetRequest request) {
-                // TODO Auto-generated method stub
-                HttpEnging.setDebug(true);
-
-            }
-
-            @Override
-            public void onDataReceived(BaseNetRequest request, IBinaryDataHandler dataHandler) {
-                // TODO Auto-generated method stub
-                HttpEnging.setDebug(true);
-
+        FileDownloader.getInstance().downloadImage(url, new IImageDownloadReponse() {
+			
+			@Override
+			public void onHttpRecvError(BaseNetRequest request, Throwable error,
+					String content) {
+			}
+			
+			@Override
+			public void onHttpRecvCancelled(BaseNetRequest request) {
+			}
+			
+			@Override
+			public void onFileSaved(BaseNetRequest request, File file) {
+			}
+			
+			@Override
+			public void onDataProgress(BaseNetRequest request, long receivedLength,
+					long totalLength) {
+			}
+			
+			@Override
+			public void onDataPostProcessFinished(BaseNetRequest request,
+					IBinaryDataHandler dataHandler) {
                 if (dataHandler.isProcessSuccess()) {
                     Object bmpObject = dataHandler.getDecodeData();
                     image.setImageBitmap((Bitmap) bmpObject);
                 }
-            }
+			}
+		});
 
-            @Override
-            public void onDataProgress(BaseNetRequest request, long receivedLength, long totalLength) {
-                // TODO Auto-generated method stub
-                HttpEnging.setDebug(true);
-
-            }
-
-        }, new IBinaryDataHandler() {
-
-            Bitmap decodeBmp = null;
-
-            @Override
-            public boolean isProcessSuccess() {
-                return decodeBmp != null;
-            }
-
-            @Override
-            public void onDataReceived(BaseNetRequest request, byte[] data) {
-                Bitmap bmp = null;
-                decodeBmp = null;
-                if (data != null) {
-                    bmp = ImageDecoder.decode(data);
-                }
-                if (bmp != null) {
-                    decodeBmp = bmp;
-                    // saveBitmapToFile(bmp, filePath);
-                }
-            }
-
-            @Override
-            public Object getDecodeData() {
-                return decodeBmp;
-            }
-        });
     }
 
     private void testDownload() {
 
         String url = "http://gdown.baidu.com/data/wisegame/2c6a60c5cb96c593/QQ_182.apk";
-        FileDownloader.getInstance().download(url, new INetDownloadReponse() {
+        FileDownloader.getInstance().downloadFile(url, new INetDownloadReponse() {
 
             @Override
             public void onHttpRecvError(BaseNetRequest request, Throwable error, String content) {
@@ -223,31 +184,5 @@ public class MainActivity extends Activity {
                 progress_text.setText(perStr);
             }
         });
-    }
-
-    private void saveBitmapToFile(Bitmap bitmap, String path) {
-        BufferedOutputStream os = null;
-        try {
-            File file = new File(path);
-            if (file != null) {
-                if (file.getParent() != null && !file.getParentFile().exists()) {
-                    file.getParentFile().mkdirs();
-                    file.delete();
-                    if (!file.exists()) {
-                        file.createNewFile();
-                    }
-                }
-            }
-            os = new BufferedOutputStream(new FileOutputStream(file));
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
-        } catch (Exception e) {
-        } finally {
-            if (os != null) {
-                try {
-                    os.close();
-                } catch (IOException e) {
-                }
-            }
-        }
     }
 }

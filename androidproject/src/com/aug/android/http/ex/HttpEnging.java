@@ -1,18 +1,19 @@
 package com.aug.android.http.ex;
 
+import java.util.Map;
+
+import android.content.Context;
+
 import com.aug.android.http.lib.RequestHandle;
 import com.aug.android.http.model.BaseNetRequest;
 import com.aug.android.http.model.HttpTag;
 import com.aug.android.http.model.IBinaryDataHandler;
 import com.aug.android.http.model.IHttpReponse;
+import com.aug.android.http.model.IImageDownloadReponse;
 import com.aug.android.http.model.INetBinaryReponse;
 import com.aug.android.http.model.INetDownloadReponse;
 import com.aug.android.http.utils.DataDispatchHelper;
 import com.aug.android.http.utils.LogUtils;
-
-import android.content.Context;
-
-import java.util.Map;
 
 public class HttpEnging {
     
@@ -80,6 +81,10 @@ public class HttpEnging {
 
     public static RequestHandle downloadFile(BaseNetRequest request, INetDownloadReponse response, String filePath) {
         return engine.mHttpHelper.downloadFile(request, response, filePath);
+    }
+
+    public static RequestHandle downloadImage(BaseNetRequest request, IImageDownloadReponse response, String filePath, IBinaryDataHandler dataHandler) {
+        return engine.mHttpHelper.downloadImage(request, response, filePath, dataHandler);
     }
     
     public static void sendPostAsync(BaseNetRequest request, IHttpReponse response) {
