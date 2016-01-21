@@ -1,5 +1,5 @@
 
-package demo;
+package com.aug.android.utils;
 
 import android.os.Build;
 

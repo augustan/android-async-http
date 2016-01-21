@@ -1,4 +1,4 @@
-package demo;
+package com.aug.android.utils;
 
 import java.util.Locale;
 

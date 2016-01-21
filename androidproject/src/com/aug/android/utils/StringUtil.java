@@ -1,5 +1,5 @@
 
-package demo;
+package com.aug.android.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;

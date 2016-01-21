@@ -1,5 +1,5 @@
 
-package demo;
+package com.aug.android.image;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;

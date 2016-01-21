@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.aug.android.http.ex.HttpEnging;
+import com.aug.android.http.ex.download.FileDownloader;
 import com.aug.android.http.lib.RequestHandle;
 import com.aug.android.http.model.BaseNetRequest;
 import com.aug.android.http.model.HttpTag;
@@ -25,6 +26,7 @@ import com.aug.android.http.model.IBinaryDataHandler;
 import com.aug.android.http.model.INetBinaryReponse;
 import com.aug.android.http.model.INetDownloadReponse;
 import com.aug.android.http.model.INetTextReponse;
+import com.aug.android.image.ImageDecoder;
 import com.taobao.de.aligame.http.R;
 
 public class MainActivity extends Activity {
@@ -124,7 +126,7 @@ public class MainActivity extends Activity {
         String url = "http://img6.cache.netease.com/photo/0001/2014-11-21/ABIMUU6G00AN0001.jpg";
         BaseNetRequest request = new BaseNetRequest(url);
 
-        final String filePath = getFilePath(url);
+//        final String filePath = getFilePath(url);
 
         HttpEnging.getBinaryDataAsync(request, new INetBinaryReponse() {
 
@@ -192,30 +194,20 @@ public class MainActivity extends Activity {
     private void testDownload() {
 
         String url = "http://gdown.baidu.com/data/wisegame/2c6a60c5cb96c593/QQ_182.apk";
-        BaseNetRequest request = new BaseNetRequest(url);
-
-        final String filePath = getFilePath(url) + ".apk";
-
-        runningRequest = HttpEnging.downloadFile(request, new INetDownloadReponse() {
+        FileDownloader.getInstance().download(url, new INetDownloadReponse() {
 
             @Override
             public void onHttpRecvError(BaseNetRequest request, Throwable error, String content) {
-                // TODO Auto-generated method stub
-
                 HttpEnging.setDebug(true);
             }
 
             @Override
             public void onHttpRecvCancelled(BaseNetRequest request) {
-                // TODO Auto-generated method stub
-
                 HttpEnging.setDebug(true);
             }
 
             @Override
             public void onFileSaved(BaseNetRequest request, File file) {
-                // TODO Auto-generated method stub
-
                 HttpEnging.setDebug(true);
                 progress.setProgress(100);
                 progress_text.setText("100%");
@@ -230,21 +222,7 @@ public class MainActivity extends Activity {
                 String perStr = String.format("%d / %d  %.02f%%", receivedLength, totalLength, per);
                 progress_text.setText(perStr);
             }
-        }, filePath);
-    }
-
-    public static String getFilePath(String url) {
-
-        switch (Scheme.ofUri(url)) {
-        /*
-         * 生成本地文件url url = Scheme.FILE.wrap(path);
-         */
-            case FILE:
-                return Scheme.FILE.crop(url);
-            default:
-                break;
-        }
-        return ImageUtil.getCacheImageFileName(url);
+        });
     }
 
     private void saveBitmapToFile(Bitmap bitmap, String path) {
