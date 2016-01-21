@@ -56,7 +56,7 @@ public class FileDownloader implements IDownloadManage {
 				FileDownloadTask task = getNextTask(downloadTasksQueue, true);
 				if (task != null) {
 					runningTasks.put(task.getTaskKey(), task);
-					task.run();
+					SingleHandler.getInstance(false).post(task);
 				}
 			}
 		}

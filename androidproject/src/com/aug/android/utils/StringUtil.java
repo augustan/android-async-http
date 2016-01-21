@@ -9,6 +9,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class StringUtil {
     private static final String UTF8 = "utf-8";
+    public static final String TMP_FILE_POST_FIX = ".tmp";
 
     // MD5 加密
     public static String toMd5(String src) {

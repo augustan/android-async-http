@@ -8,6 +8,7 @@ import com.aug.android.http.ex.HttpEnging;
 import com.aug.android.http.lib.RangeFileAsyncHttpResponseHandler;
 import com.aug.android.http.model.BaseNetRequest;
 import com.aug.android.http.model.INetDownloadReponse;
+import com.aug.android.utils.StringUtil;
 
 /**
  * 下载文件。字节流不在内存中缓存，直接写入文件
@@ -52,10 +53,23 @@ public class DownloadHandler extends RangeFileAsyncHttpResponseHandler {
 
     @Override
     public void onSuccess(int statusCode, Header[] headers, File file) {
-        savedFile = file;
+    	String path = file.getPath();
+    	int index = path.lastIndexOf(StringUtil.TMP_FILE_POST_FIX);
+    	if (index + StringUtil.TMP_FILE_POST_FIX.length() == path.length()) {
+    		path = path.substring(0, index);
+    		savedFile = new File(path);
+    		if (savedFile.exists()) {
+    			savedFile.delete();
+    		}
+    		if (!file.renameTo(savedFile)) {
+        		savedFile = file;
+    		}
+    	} else {
+    		savedFile = file;
+    	}
         notifyDownloadFinish(savedFile);
     }
-
+    
     private void notifyHttpCancelled() {
         HttpEnging.getDispatch().runOnUIThread(new Runnable() {
             @Override

@@ -7,10 +7,10 @@ import android.graphics.Bitmap;
 import com.aug.android.http.ex.HttpEnging;
 import com.aug.android.http.lib.RequestHandle;
 import com.aug.android.http.model.BaseNetRequest;
-import com.aug.android.http.model.IBinaryDataHandler;
 import com.aug.android.http.model.IFileDataHandler;
 import com.aug.android.http.model.IImageDownloadReponse;
 import com.aug.android.image.ImageDecoder;
+import com.aug.android.utils.SingleHandler;
 
 public class ImageDownloadTask extends FileDownloadTask {
 
@@ -70,6 +70,24 @@ public class ImageDownloadTask extends FileDownloadTask {
 		return "IMG_" + fileKey;
 	}
 
+	@Override
+	protected boolean abortDownloadOnFileExist(String path) {
+		boolean abordDownload = false;
+		super.abortDownloadOnFileExist(path);
+		File newFile = new File(path);
+		if (newFile.exists()) {
+			abordDownload = true;
+			imagePostHandler.onDataReceived(null, newFile);
+			SingleHandler.getInstance(true).post(new Runnable() {
+				@Override
+				public void run() {
+					imageRespHandler.onDataPostProcessFinished(null, imagePostHandler);
+				}
+			});
+		}
+		return abordDownload;
+	}
+	
 	@Override
 	protected RequestHandle sendDownloadRequest(BaseNetRequest request, String filePath) {
 		return HttpEnging.downloadImage(request, imageRespHandler, filePath, imagePostHandler);

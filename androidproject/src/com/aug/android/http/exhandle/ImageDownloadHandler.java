@@ -6,7 +6,6 @@ import org.apache.http.Header;
 
 import com.aug.android.http.ex.HttpEnging;
 import com.aug.android.http.model.BaseNetRequest;
-import com.aug.android.http.model.IBinaryDataHandler;
 import com.aug.android.http.model.IFileDataHandler;
 import com.aug.android.http.model.IImageDownloadReponse;
 
@@ -27,7 +26,7 @@ public class ImageDownloadHandler extends DownloadHandler {
     @Override
     public void onSuccess(int statusCode, Header[] headers, File file) {
     	super.onSuccess(statusCode, headers, file);
-        processBinaryData(file);
+        processBinaryData(savedFile);
     }
     
     private void processBinaryData(File file) {
