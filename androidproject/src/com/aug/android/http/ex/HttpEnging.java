@@ -8,6 +8,7 @@ import com.aug.android.http.lib.RequestHandle;
 import com.aug.android.http.model.BaseNetRequest;
 import com.aug.android.http.model.HttpTag;
 import com.aug.android.http.model.IBinaryDataHandler;
+import com.aug.android.http.model.IFileDataHandler;
 import com.aug.android.http.model.IHttpReponse;
 import com.aug.android.http.model.IImageDownloadReponse;
 import com.aug.android.http.model.INetBinaryReponse;
@@ -83,7 +84,7 @@ public class HttpEnging {
         return engine.mHttpHelper.downloadFile(request, response, filePath);
     }
 
-    public static RequestHandle downloadImage(BaseNetRequest request, IImageDownloadReponse response, String filePath, IBinaryDataHandler dataHandler) {
+    public static RequestHandle downloadImage(BaseNetRequest request, IImageDownloadReponse response, String filePath, IFileDataHandler dataHandler) {
         return engine.mHttpHelper.downloadImage(request, response, filePath, dataHandler);
     }
     

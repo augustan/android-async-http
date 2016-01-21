@@ -7,18 +7,18 @@ import org.apache.http.Header;
 import com.aug.android.http.ex.HttpEnging;
 import com.aug.android.http.model.BaseNetRequest;
 import com.aug.android.http.model.IBinaryDataHandler;
+import com.aug.android.http.model.IFileDataHandler;
 import com.aug.android.http.model.IImageDownloadReponse;
-import com.aug.android.utils.FileUtil;
 
 /**
  * 下载文件。字节流不在内存中缓存，直接写入文件
  */
 public class ImageDownloadHandler extends DownloadHandler {
 
-    private final IBinaryDataHandler dataHandler;
+    private final IFileDataHandler dataHandler;
     private IImageDownloadReponse response;
     
-    public ImageDownloadHandler(BaseNetRequest request, IImageDownloadReponse response, String filePath, IBinaryDataHandler dataHandler) {
+    public ImageDownloadHandler(BaseNetRequest request, IImageDownloadReponse response, String filePath, IFileDataHandler dataHandler) {
     	super(request, response, filePath);
     	this.response = response;
     	this.dataHandler = dataHandler;
@@ -32,21 +32,17 @@ public class ImageDownloadHandler extends DownloadHandler {
     
     private void processBinaryData(File file) {
         if (dataHandler != null) {
-        	byte [] binaryData = FileUtil.getBytesFromFile(file);
-        	if (binaryData != null) {
-		        dataHandler.onDataReceived(request, binaryData);
-		        if (dataHandler.isProcessSuccess()) {
-		        	nofityDataPostProcessFinished(request, dataHandler);
-		        } else {
-		            notifyHttpError(new Throwable("process bin data failed"), "");
-		        }
-        	} else {
-        		notifyHttpError(new Throwable("read file failed"), "");
-        	}
+	        dataHandler.onDataReceived(request, file);
+	        if (dataHandler.isProcessSuccess()) {
+	        	nofityDataPostProcessFinished(request, dataHandler);
+	        } else {
+	            notifyHttpError(new Throwable("process bin data failed"), "");
+	        }
+    	
         }
     }
 
-    private void nofityDataPostProcessFinished(final BaseNetRequest request, final IBinaryDataHandler dataHandler) {
+    private void nofityDataPostProcessFinished(final BaseNetRequest request, final IFileDataHandler dataHandler) {
         HttpEnging.getDispatch().runOnUIThread(new Runnable() {
             @Override
             public void run() {

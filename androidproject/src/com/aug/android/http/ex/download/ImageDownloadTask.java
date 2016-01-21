@@ -1,11 +1,14 @@
 package com.aug.android.http.ex.download;
 
+import java.io.File;
+
 import android.graphics.Bitmap;
 
 import com.aug.android.http.ex.HttpEnging;
 import com.aug.android.http.lib.RequestHandle;
 import com.aug.android.http.model.BaseNetRequest;
 import com.aug.android.http.model.IBinaryDataHandler;
+import com.aug.android.http.model.IFileDataHandler;
 import com.aug.android.http.model.IImageDownloadReponse;
 import com.aug.android.image.ImageDecoder;
 
@@ -18,7 +21,7 @@ public class ImageDownloadTask extends FileDownloadTask {
 
 		@Override
 		public void onDataPostProcessFinished(BaseNetRequest request,
-				IBinaryDataHandler dataHandler) {
+				IFileDataHandler dataHandler) {
         	if (listener != null) {
         		listener.onDataPostProcessFinished(request, dataHandler);
         	}
@@ -29,7 +32,7 @@ public class ImageDownloadTask extends FileDownloadTask {
 		}
     };
     
-	private IBinaryDataHandler imagePostHandler = new IBinaryDataHandler() {
+	private IFileDataHandler imagePostHandler = new IFileDataHandler() {
 
         Bitmap decodeBmp = null;
 
@@ -39,21 +42,21 @@ public class ImageDownloadTask extends FileDownloadTask {
         }
 
         @Override
-        public void onDataReceived(BaseNetRequest request, byte[] data) {
+        public Object getDecodeData() {
+            return decodeBmp;
+        }
+
+		@Override
+		public void onDataReceived(BaseNetRequest request, File file) {
             Bitmap bmp = null;
             decodeBmp = null;
-            if (data != null) {
-                bmp = ImageDecoder.decode(data);
+            if (file != null) {
+                bmp = ImageDecoder.decode(file.getPath());
             }
             if (bmp != null) {
                 decodeBmp = bmp;
             }
-        }
-
-        @Override
-        public Object getDecodeData() {
-            return decodeBmp;
-        }
+		}
     };
 
 	public ImageDownloadTask(String url, IImageDownloadReponse listener,

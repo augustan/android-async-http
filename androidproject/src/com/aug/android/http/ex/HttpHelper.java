@@ -23,6 +23,7 @@ import com.aug.android.http.lib.SyncHttpClient;
 import com.aug.android.http.model.BaseNetRequest;
 import com.aug.android.http.model.HttpTag;
 import com.aug.android.http.model.IBinaryDataHandler;
+import com.aug.android.http.model.IFileDataHandler;
 import com.aug.android.http.model.IHttpReponse;
 import com.aug.android.http.model.IImageDownloadReponse;
 import com.aug.android.http.model.INetBinaryReponse;
@@ -63,7 +64,7 @@ public class HttpHelper {
     }
 
     public RequestHandle downloadImage(BaseNetRequest request, IImageDownloadReponse response,
-            String filePath, IBinaryDataHandler dataHandler) {
+            String filePath, IFileDataHandler dataHandler) {
         AsyncHttpResponseHandler responseHandler = new ImageDownloadHandler(request, response, filePath, dataHandler);
         RequestParams requestParams = new RequestParams(request.getParams());
 

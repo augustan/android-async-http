@@ -19,7 +19,7 @@ import com.aug.android.http.ex.download.FileDownloader;
 import com.aug.android.http.lib.RequestHandle;
 import com.aug.android.http.model.BaseNetRequest;
 import com.aug.android.http.model.HttpTag;
-import com.aug.android.http.model.IBinaryDataHandler;
+import com.aug.android.http.model.IFileDataHandler;
 import com.aug.android.http.model.IImageDownloadReponse;
 import com.aug.android.http.model.INetDownloadReponse;
 import com.aug.android.http.model.INetTextReponse;
@@ -142,7 +142,7 @@ public class MainActivity extends Activity {
 			
 			@Override
 			public void onDataPostProcessFinished(BaseNetRequest request,
-					IBinaryDataHandler dataHandler) {
+					IFileDataHandler dataHandler) {
                 if (dataHandler.isProcessSuccess()) {
                     Object bmpObject = dataHandler.getDecodeData();
                     image.setImageBitmap((Bitmap) bmpObject);
