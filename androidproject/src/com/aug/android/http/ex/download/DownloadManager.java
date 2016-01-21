@@ -8,27 +8,27 @@ import com.aug.android.http.model.INetDownloadReponse;
 import com.aug.android.http.utils.LogUtils;
 import com.aug.android.utils.SingleHandler;
 
-public class FileDownloader implements IDownloadManage {
+public class DownloadManager implements IDownloadManage {
 
 	private static final String TAG = "fldl";
-	private static FileDownloader instance = null;
+	private static DownloadManager instance = null;
 
 	private int limitRunningTaskCount = 3;
 	private HashMap<String, FileDownloadTask> downloadTasksQueue = new HashMap<String, FileDownloadTask>();
 	private HashMap<String, FileDownloadTask> runningTasks = new HashMap<String, FileDownloadTask>();
 
-	public static FileDownloader getInstance() {
+	public static DownloadManager getInstance() {
 		if (instance == null) {
-			synchronized (FileDownloader.class) {
+			synchronized (DownloadManager.class) {
 				if (instance == null) {
-					instance = new FileDownloader();
+					instance = new DownloadManager();
 				}
 			}
 		}
 		return instance;
 	}
 
-	private FileDownloader() {
+	private DownloadManager() {
 	}
 
 	public void downloadFile(String url, INetDownloadReponse listener) {
@@ -104,6 +104,12 @@ public class FileDownloader implements IDownloadManage {
 			break;
 		case FileDownloadTask.DL_TASK_STATUS_DECODE_FAIL:
 			str = "DECODE_FAIL";
+			break;
+		case FileDownloadTask.DL_TASK_STATUS_GET_FROM_SDCARD:
+			str = "ON_CARD";
+			break;
+		case FileDownloadTask.DL_TASK_STATUS_GET_FROM_CACHE:
+			str = "ON_CACHE";
 			break;
 		}
 		return str;

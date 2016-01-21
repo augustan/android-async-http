@@ -19,6 +19,8 @@ public class FileDownloadTask implements Runnable {
 	
 	public static final int DL_TASK_STATUS_DECODE_SUCCESS = 5;
 	public static final int DL_TASK_STATUS_DECODE_FAIL = 6;
+	public static final int DL_TASK_STATUS_GET_FROM_SDCARD = 7;
+	public static final int DL_TASK_STATUS_GET_FROM_CACHE = 8;
 
 	private String url;
 	private INetDownloadReponse listener;

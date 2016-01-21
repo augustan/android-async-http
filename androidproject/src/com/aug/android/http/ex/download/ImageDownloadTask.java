@@ -9,6 +9,7 @@ import com.aug.android.http.lib.RequestHandle;
 import com.aug.android.http.model.BaseNetRequest;
 import com.aug.android.http.model.IFileDataHandler;
 import com.aug.android.http.model.IImageDownloadReponse;
+import com.aug.android.image.ImageCacheManager;
 import com.aug.android.image.ImageDecoder;
 import com.aug.android.utils.SingleHandler;
 
@@ -27,18 +28,38 @@ public class ImageDownloadTask extends FileDownloadTask {
         	}
         	if (dataHandler != null) {
         		boolean success = dataHandler.isProcessSuccess();
-        		notifyStatusChanged(success ? DL_TASK_STATUS_DECODE_SUCCESS : DL_TASK_STATUS_DECODE_FAIL);
+        		int status = success ? DL_TASK_STATUS_DECODE_SUCCESS : DL_TASK_STATUS_DECODE_FAIL;
+        		if (success && request == null) {
+        			status = DL_TASK_STATUS_GET_FROM_SDCARD;
+        			if (dataHandler instanceof BitmapHolder) {
+        				boolean fromCache = ((BitmapHolder)dataHandler).isGetFromCache();
+        				if (fromCache) {
+        					status = DL_TASK_STATUS_GET_FROM_CACHE;
+        				}
+        			}
+        		}
+        		notifyStatusChanged(status);
         	}
 		}
     };
     
-	private IFileDataHandler imagePostHandler = new IFileDataHandler() {
+    private class BitmapHolder implements IFileDataHandler {
 
         Bitmap decodeBmp = null;
+        boolean getFromCache = false;
 
         @Override
         public boolean isProcessSuccess() {
             return decodeBmp != null;
+        }
+        
+        private boolean isGetFromCache() {
+        	return getFromCache;
+        }
+        
+        private void setCachedBitmap(Bitmap bmp) {
+        	getFromCache = true;
+        	decodeBmp = bmp;
         }
 
         @Override
@@ -50,14 +71,18 @@ public class ImageDownloadTask extends FileDownloadTask {
 		public void onDataReceived(BaseNetRequest request, File file) {
             Bitmap bmp = null;
             decodeBmp = null;
+            getFromCache = false;
             if (file != null) {
                 bmp = ImageDecoder.decode(file.getPath());
             }
             if (bmp != null) {
                 decodeBmp = bmp;
+                ImageCacheManager.getInstance().putBitmap(getTaskKey(), bmp);
             }
 		}
-    };
+    }
+    
+	private BitmapHolder imagePostHandler = new BitmapHolder();
 
 	public ImageDownloadTask(String url, IImageDownloadReponse listener,
 			IDownloadManage manager) {
@@ -68,6 +93,23 @@ public class ImageDownloadTask extends FileDownloadTask {
 	@Override
 	public String getTaskKey() {
 		return "IMG_" + fileKey;
+	}
+	
+	@Override
+	public void run() {
+		String key = getTaskKey();
+		Bitmap bmp = ImageCacheManager.getInstance().getBitmap(key);
+		imagePostHandler.setCachedBitmap(bmp);
+		if (bmp != null) {
+			SingleHandler.getInstance(true).post(new Runnable() {
+				@Override
+				public void run() {
+					imageRespHandler.onDataPostProcessFinished(null, imagePostHandler);
+				}
+			});
+		} else {
+			super.run();
+		}
 	}
 
 	@Override

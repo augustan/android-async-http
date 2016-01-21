@@ -15,7 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.aug.android.http.ex.HttpEnging;
-import com.aug.android.http.ex.download.FileDownloader;
+import com.aug.android.http.ex.download.DownloadManager;
 import com.aug.android.http.lib.RequestHandle;
 import com.aug.android.http.model.BaseNetRequest;
 import com.aug.android.http.model.HttpTag;
@@ -120,7 +120,7 @@ public class MainActivity extends Activity {
     private void testGetImage() {
 
         String url = "http://img6.cache.netease.com/photo/0001/2014-11-21/ABIMUU6G00AN0001.jpg";
-        FileDownloader.getInstance().downloadImage(url, new IImageDownloadReponse() {
+        DownloadManager.getInstance().downloadImage(url, new IImageDownloadReponse() {
 			
 			@Override
 			public void onHttpRecvError(BaseNetRequest request, Throwable error,
@@ -155,7 +155,7 @@ public class MainActivity extends Activity {
     private void testDownload() {
 
         String url = "http://gdown.baidu.com/data/wisegame/2c6a60c5cb96c593/QQ_182.apk";
-        FileDownloader.getInstance().downloadFile(url, new INetDownloadReponse() {
+        DownloadManager.getInstance().downloadFile(url, new INetDownloadReponse() {
 
             @Override
             public void onHttpRecvError(BaseNetRequest request, Throwable error, String content) {
