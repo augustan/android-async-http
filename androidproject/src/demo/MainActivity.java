@@ -27,8 +27,6 @@ import com.taobao.de.aligame.http.R;
 
 public class MainActivity extends Activity {
 
-    public static Context g_context;
-
     private Button btn_test = null;
     private Button btn_cancel = null;
     private ImageView image = null;
@@ -41,8 +39,6 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        g_context = this;
-
         setContentView(R.layout.activity_main);
 
         HttpEnging.create(this);

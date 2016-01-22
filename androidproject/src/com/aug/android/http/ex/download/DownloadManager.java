@@ -119,10 +119,9 @@ public class DownloadManager implements IDownloadManage {
 	public void onTaskStatusChanged(final FileDownloadTask task, int lastStatus,
 			int newStatus) {
 		LogUtils.v(TAG, getStatusStr(newStatus) + " task " + task.getTaskKey());
-		
-		if (newStatus == FileDownloadTask.DL_TASK_STATUS_FINISH
-				|| newStatus == FileDownloadTask.DL_TASK_STATUS_CANCELED
-				|| newStatus == FileDownloadTask.DL_TASK_STATUS_ERROR) {
+
+        if (!(newStatus == FileDownloadTask.DL_TASK_STATUS_ADDED
+                || newStatus == FileDownloadTask.DL_TASK_STATUS_RUNNING)) {
 
 			SingleHandler.getInstance(false).post(new Runnable() {
 

@@ -15,6 +15,7 @@ import com.aug.android.http.model.INetBinaryReponse;
 import com.aug.android.http.model.INetDownloadReponse;
 import com.aug.android.http.utils.DataDispatchHelper;
 import com.aug.android.http.utils.LogUtils;
+import com.aug.android.utils.StorageUtil;
 
 public class HttpEnging {
     
@@ -34,6 +35,8 @@ public class HttpEnging {
             engine.dispatch = new DataDispatchHelper();
 
             engine.mHttpHelper = new HttpHelper();
+            
+            StorageUtil.init(context);
         }
     }
     

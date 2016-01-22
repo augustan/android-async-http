@@ -2,35 +2,37 @@ package com.aug.android.utils;
 
 import android.content.Context;
 import android.os.Environment;
-import android.renderscript.Program.TextureType;
 import android.text.TextUtils;
 
 import java.io.File;
 
-import demo.MainActivity;
-
 public class StorageUtil {
 	private static String mCacheRootDir = null;
 
+	private static Context appContext = null;
 	private static boolean mUseExternalCache = true;
 
 	private static final String CHARACTER_DIVIDER = File.separator;
     private static final String CACHE_DIR = "data" + CHARACTER_DIVIDER;
     private static final String CACHE_DIRECTION = "cache" + CHARACTER_DIVIDER;
+    
+    public static void init(Context c) {
+        appContext = c.getApplicationContext();
+        setCacheRootDir(c, mUseExternalCache, true);
+    }
 
 	public static String getCacheRootDir() {
 		if (TextUtils.isEmpty(mCacheRootDir)) {
-			setCacheRootDir();
+            setCacheRootDir();
 		}
-
 		return mCacheRootDir;
 	}
 
-	public static String setCacheRootDir() {
-		setCacheRootDir(MainActivity.g_context, mUseExternalCache, true);
-		return mCacheRootDir;
-	}
-
+	private static String setCacheRootDir() {
+        setCacheRootDir(appContext, mUseExternalCache, true);
+        return mCacheRootDir;
+    }
+    
 	private static void setCacheRootDir(Context context,
 			boolean preferExternal, boolean withLastSeparator) {
 		File appCacheDir = null;
@@ -82,7 +84,7 @@ public class StorageUtil {
 	}
 
 	public static String getInternalCacheDir() {
-		File appCacheDir = getInternalCacheDir(MainActivity.g_context);
+		File appCacheDir = getInternalCacheDir(appContext);
 		String path = (appCacheDir != null ? appCacheDir.getAbsolutePath() : "");
 		return appendWithSeparator(path);
 	}
@@ -128,8 +130,8 @@ public class StorageUtil {
 		return mUseExternalCache;
 	}
 
-	public static void setUseExternalCache(boolean mUseExternalCache) {
-		StorageUtil.mUseExternalCache = mUseExternalCache;
+	public static void setUseExternalCache(boolean useExternalCache) {
+		mUseExternalCache = useExternalCache;
 	}
 
 	public static String getCacheFilePath(String url) {
